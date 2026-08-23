@@ -1,0 +1,74 @@
+INFORME – SIMULACIÓN DE SEMÁFOROS CON HILOS Y ALGORITMO DEL BANQUERO
+====================================================================
+
+1. OBJETIVO
+Simular una vía en cruz con cuatro nodos (A, B, C y D), usando un hilo
+de ejecución por nodo, semáforos como recurso compartido y el algoritmo
+del banquero para controlar el acceso al cruce.
+
+2. DATOS DEL PROBLEMA
+- A -> B: 50 vehículos.
+- B -> A: 35 vehículos.
+- D -> C: 100 vehículos subiendo debido al accidente.
+- C -> D: 20 vehículos bajando.
+- Total con accidente: 205 vehículos.
+- Tiempo por vehículo: 30 segundos.
+- Recurso compartido: cruce central, capacidad 1.
+
+3. MODELO DE CONCURRENCIA
+Los nodos A, B, C y D se implementan como cuatro hilos Python.
+Cada hilo genera solicitudes para sus vehículos. El cruce central
+se protege con un mecanismo de sincronización.
+
+Con Banquero, antes de conceder el recurso se ejecuta una prueba de
+estado seguro. Sin Banquero se utiliza una disciplina FIFO sencilla,
+sin la prueba de seguridad.
+
+Para que el ejercicio no tarde físicamente 30 segundos por vehículo,
+el programa usa tiempo virtual: cada paso suma 30 segundos al reloj
+simulado. Esto permite obtener el tiempo de terminación exacto sin
+esperar en tiempo real.
+
+4. RESULTADOS DEL CASO CON ACCIDENTE
+                         CON BANQUERO      SIN BANQUERO
+Vehículos procesados:           205               205
+Tiempo total (s):              6150              6150
+Tiempo total (min):          102.50            102.50
+Rendimiento (veh/min):        2.00              2.00
+
+5. RESULTADOS POR SENTIDO
+Sentido     Vehículos    Tiempo de servicio
+A -> B          50              1500 s = 25.00 min
+B -> A          35              1050 s = 17.50 min
+D -> C         100              3000 s = 50.00 min
+C -> D          20               600 s = 10.00 min
+TOTAL           205              6150 s = 102.50 min
+
+6. CARGA DE LOS HILOS
+Nodo A: 50 vehículos × 30 s = 1500 s = 25.00 min
+Nodo B: 35 vehículos × 30 s = 1050 s = 17.50 min
+Nodo C: 20 vehículos × 30 s = 600 s = 10.00 min
+Nodo D: 100 vehículos × 30 s = 3000 s = 50.00 min
+
+7. INTERPRETACIÓN
+En este modelo simplificado el cruce tiene capacidad 1, por lo que
+todos los vehículos deben utilizar el recurso central uno a uno.
+Por ello, el tiempo total de ocupación es necesariamente:
+
+205 × 30 = 6150 segundos = 102.5 minutos.
+
+El algoritmo del banquero no reduce mágicamente ese tiempo de servicio;
+su función es evitar conceder recursos cuando el estado sería inseguro.
+La comparación con y sin banquero sirve para mostrar la política de
+concesión y la seguridad del estado concurrente.
+
+8. VALIDACIÓN
+La hoja "Casos independientes" del Excel calcula los tiempos con
+fórmulas N × 30 y no depende del código Python. La hoja "Resultados"
+contiene la comparación con la ejecución del programa. Los totales
+deben coincidir.
+
+9. ARCHIVOS ENTREGADOS
+- simulacion_semaforos_banquero.py
+- casos_semaforos_banquero.xlsx
+- informe_simulacion_semaforos.txt
